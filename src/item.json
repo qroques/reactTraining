@@ -1,0 +1,7 @@
+[
+    { "name": "Intern", "price": 10, "multiplier": 0.1 },
+    { "name": "Freelance", "price": 15, "multiplier": 0.2 },
+    { "name": "Junior dev", "price": 100, "multiplier": 1.2 },
+    { "name": "Dependabot", "price": 10000, "multiplier": 10.4 }
+]
+  
