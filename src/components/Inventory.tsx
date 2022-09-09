@@ -1,4 +1,4 @@
-import { Item } from "./Game"
+import { Item } from "../modules/game"
 
 type Props = {
   items: Item[],

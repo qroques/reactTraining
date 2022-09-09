@@ -1,5 +1,5 @@
-import { Item } from "./Game"
-import items from './item.json'
+import { Item } from "../modules/game"
+import items from '../item.json'
 
 type Props = {
   available: number,
