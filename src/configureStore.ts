@@ -1,22 +1,21 @@
-import { createStore, applyMiddleware } from 'redux'
-import { rootReducer } from './modules';
+import { configureStore } from '@reduxjs/toolkit'
+import createSagaMiddleware from 'redux-saga'
+import { rootReducer } from './modules'
 
-import {
-  reducer as game,
-  State as GameState
-} from './modules/game'
+export default function createStore(saga: any) {
+  const sagaMiddleware = createSagaMiddleware()
 
-export type RootState = {
-  game: GameState;
-}
+  const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => ([
+      sagaMiddleware,
+      ...getDefaultMiddleware({
+        serializableCheck: false
+      })
+    ])
+  })
 
-export const configureStore =  () => {
-  const store = createStore(
-    rootReducer,
-    applyMiddleware()
-  )
+  sagaMiddleware.run(saga)
 
   return store
 }
-
-export default configureStore

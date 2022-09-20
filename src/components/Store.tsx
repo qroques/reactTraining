@@ -1,5 +1,6 @@
 import { Item } from "../modules/game"
-import items from '../item.json'
+import { useSelector } from "react-redux"
+import { storeItemsSelector } from "../modules/settings"
 
 type Props = {
   available: number,
@@ -7,9 +8,10 @@ type Props = {
 }
 
 const Store = (props: Props) => {
+    const storeItems = useSelector(storeItemsSelector)
     return (
         <ul>
-            {items.map((item, key) => 
+            {storeItems.map((item, key) => 
                 <li key={key}>
                     <button disabled={item.price > props.available} onClick={() => props.handleBuyItem(item)}>Buy</button>
                     <span>{item.name} - <span className='price'>{item.price}🪙</span>({item.multiplier < 0 ? '-' : '+'}{item.multiplier}/s)</span>

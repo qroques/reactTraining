@@ -1,7 +1,5 @@
-const INCREMENT = 'game::INCREMENT'
-const BUY_ITEM = 'game::BUY_ITEM'
-const GENERATE_COIN = 'game::GENERATE_COIN'
-const LOOP = 'game::LOOP'
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { RootState } from ".";
 
 export type Item = {
     name: string,
@@ -14,55 +12,55 @@ export type State = {
     ownedItems: Item[];
 }
 
-const initialState: State = {
+export const initialState: State = {
     coins: 0,
     ownedItems: []
 }
 
-export const increment = () => ({ type: INCREMENT })
-export const generateCoins = (coins: number) => ({ type: GENERATE_COIN, coins })
-export const buyItem = (item: Item) => ({ type: BUY_ITEM, item })
-export const loop = () => ({ type: LOOP })
-
-type Action = IncrementAction | GenerateLinesAction | BuyItemAction
-
-type IncrementAction = {
-  type: typeof INCREMENT;
+export type GenerateLinesAction = {
+    payload: { 
+        coins: number;
+    }
 }
 
-type GenerateLinesAction = {
-  type: typeof GENERATE_COIN;
-  coins: number;
+export type BuyItemAction = {
+    payload: {
+        item: Item;
+    }
 }
 
-type BuyItemAction = {
-  type: typeof BUY_ITEM;
-  item: Item;
-}
-
-
-export const reducer = (state: State = initialState, action: Action) => {
-    if (action.type === INCREMENT) {
-        return {
+const gameSlice = createSlice({
+    name: 'game',
+    initialState,
+    reducers: {
+        increment: (state) => ({
             ...state,
             coins: state.coins + 1
-        }
-    }
-
-    if (action.type === GENERATE_COIN) {
-        return {
+        }),
+        generateCoins: (state, { payload }: GenerateLinesAction) => ({
             ...state,
-            coins: state.coins + action.coins
-        }
-    }
-
-    if (action.type === BUY_ITEM) {
-        return {
+            coins: state.coins + payload.coins
+        }),
+        buyItem: (state, { payload }: BuyItemAction) => ({
             ...state,
-            coins: state.coins - action.item.price,
-            ownedItems: [...state.ownedItems, action.item]
-        }
+            coins: state.coins - payload.item.price,
+            ownedItems: [...state.ownedItems, payload.item]
+        })
     }
+})
 
-    return state
-}
+export const { 
+    increment,
+    generateCoins,
+    buyItem
+} = gameSlice.actions
+
+export type SelectableState = Pick<RootState, 'game'>
+export const coinsSelector = (state: SelectableState) => state.game.coins;
+export const inventorySelector = (state: SelectableState) => state.game.ownedItems;
+export const coinPerPeriodSelector = createSelector(
+    inventorySelector,
+    (inventory) => inventory.reduce((prev: number, item: Item) => item.multiplier + prev, 0)
+)
+
+export default gameSlice.reducer
